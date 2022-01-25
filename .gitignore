@@ -6,8 +6,6 @@ build/
 !**/src/test/**/build/
 !**/nodejs
 
-.docx
-
 ### STS ###
 .apt_generated
 .classpath
