@@ -1,11 +1,11 @@
-# service_poller
+# Simple Service Poller
 Simple Spring Boot HTTP service poller
 
-##Dependencies
+## Dependencies
 * Docker
 * Java 11
 
-##Instructions
+## Instructions
 * Run 'docker-compose up -d' in this directory to launch the database server
 * Run 'gradlew assemle' to build the bootJar and assemble the JS
 * Run 'java -jar build/libs/servicepoller-1.jar
