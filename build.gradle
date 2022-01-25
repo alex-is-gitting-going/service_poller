@@ -1,0 +1,65 @@
+plugins {
+	id 'org.springframework.boot' version '2.6.3'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+	id "com.github.node-gradle.node" version "3.1.1"
+}
+
+group = 'com.kry.utility'
+version = '1'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+jar {
+	enabled = false
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'mysql:mysql-connector-java'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	developmentOnly "org.springframework.boot:spring-boot-devtools"
+}
+
+node {
+	version = '14.17.0'
+	download = true
+	workDir = file("${project.projectDir}/src/main/webapp/nodejs")
+	npmWorkDir = file("${project.projectDir}/src/main/webapp/npm")
+	nodeModulesDir = file("${project.projectDir}/src/main/webapp")
+}
+
+task appNpmInstall(type: NpmTask) {
+	description = "Installs all dependencies from package.json"
+	workingDir = file("${project.projectDir}/src/main/webapp")
+	args = ["install"]
+}
+
+task appNpmBuild(type: NpmTask) {
+	description = "Builds production version of the webapp"
+	workingDir = file("${project.projectDir}/src/main/webapp")
+	args = ["run", "build"]
+}
+
+task copyWebApp(type: Copy) {
+	from 'src/main/webapp/build'
+	into 'build/resources/main/static/.'
+}
+
+assemble.dependsOn copyWebApp
+copyWebApp.dependsOn appNpmBuild
+appNpmBuild.dependsOn appNpmInstall
+
+
