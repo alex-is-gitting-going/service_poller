@@ -7,6 +7,6 @@ Simple Spring Boot HTTP service poller
 
 ## Instructions
 * Run 'docker-compose up -d' in root directory to launch the database server
-* Run 'gradlew assemle' to build the bootJar and assemble the JS
+* Run 'gradlew assemble' to build the bootJar and assemble the JS
 * Run 'java -jar build/libs/servicepoller-1.jar
 * Browse to localhost:8080 in Chrome
