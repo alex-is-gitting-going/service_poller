@@ -10,3 +10,6 @@ Simple Spring Boot HTTP service poller
 * Run ``gradlew assemble`` to build the bootJar and assemble the JS
 * Run ``java -jar build/libs/servicepoller-1.jar``
 * Browse to [http://localhost:8080](http://localhost:8080) in Chrome
+
+## Writeup
+Please read ``Assignment Writeup.docx`` for a more detailed write up.
