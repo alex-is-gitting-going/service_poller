@@ -26,14 +26,21 @@ export const validateName = (name, currentNameInputError, setInputError) => {
   return true;
 };
 
+export const isValidURL = (string) => {
+  let url;
+
+  try {
+    url = new URL(string);
+  } catch (_) {
+    return false;
+  }
+
+  return url.protocol === "http:" || url.protocol === "https:";
+};
+
 export const validateURL = (url, currentInputError, setInputError) => {
-  const isValidURL =
-    // eslint-disable-next-line no-useless-escape
-    /^(http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/.test(
-      url
-    );
-  if (!isValidURL) {
-    setInputError("Invalid URL (must include protocol)");
+  if (!isValidURL(url)) {
+    setInputError("Invalid URL (must include protocol - http:// or https://)");
     return false;
   }
   if (url.length > 2000) {
@@ -62,7 +69,6 @@ const PolledServices = ({ selectedUsername, setSelectedUsername }) => {
   const [updateServiceURL, setUpdateServiceURL] = useState("");
 
   const getMonitoredServicesData = useCallback(() => {
-    console.log("now");
     getPolledURLs(selectedUsername)
       .then((data) => {
         if (!firstLoadDone) {
@@ -285,6 +291,9 @@ const PolledServices = ({ selectedUsername, setSelectedUsername }) => {
               helperText={newURLToPollNameError}
               error={newURLToPollNameError !== ""}
               onChange={(event) => setNewURLToPollName(event.target.value)}
+              onKeyPress={(event) => {
+                if (event.code === "Enter") addNewService();
+              }}
             />
             <TextField
               style={styles.newServiceURL}
