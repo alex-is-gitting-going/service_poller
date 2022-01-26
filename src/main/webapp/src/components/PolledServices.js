@@ -28,6 +28,7 @@ export const validateName = (name, currentNameInputError, setInputError) => {
 
 export const validateURL = (url, currentInputError, setInputError) => {
   const isValidURL =
+    // eslint-disable-next-line no-useless-escape
     /^(http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/.test(
       url
     );
