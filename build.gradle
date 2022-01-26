@@ -58,7 +58,7 @@ task copyWebApp(type: Copy) {
 	into 'build/resources/main/static/.'
 }
 
-assemble.dependsOn copyWebApp
+bootJar.dependsOn copyWebApp
 copyWebApp.dependsOn appNpmBuild
 appNpmBuild.dependsOn appNpmInstall
 
