@@ -52,7 +52,7 @@ class ServiceMonitoringControllerTest {
 
         when(mockServiceMonitoringService.getAllMonitoredServices()).thenReturn(dummyServiceList);
 
-        String response = mockMvc.perform(get("/api/v1/monitoredservices/all"))
+        String response = mockMvc.perform(get("/api/v1/monitored-services/all"))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
         Assertions.assertEquals(response, mapper.writeValueAsString(dummyServiceList));
@@ -64,7 +64,7 @@ class ServiceMonitoringControllerTest {
 
         when(mockServiceMonitoringService.getAllMonitoredServices()).thenReturn(dummyServiceList);
 
-        String response = mockMvc.perform(get("/api/v1/monitoredservices/all"))
+        String response = mockMvc.perform(get("/api/v1/monitored-services/all"))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
         Assertions.assertEquals(response, mapper.writeValueAsString(dummyServiceList));
@@ -82,7 +82,7 @@ class ServiceMonitoringControllerTest {
         when(mockServiceMonitoringService.registerNewService(request.getName(), request.getURL(), request.getUsername())).thenReturn(service);
 
         mockMvc.perform(
-                post("/api/v1/monitoredservices")
+                post("/api/v1/monitored-services")
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
