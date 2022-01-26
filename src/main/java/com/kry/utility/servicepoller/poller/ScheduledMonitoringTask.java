@@ -19,11 +19,11 @@ import static org.springframework.http.HttpStatus.valueOf;
 
 @Component
 @AllArgsConstructor
-public class ScheduledPollingTask {
+public class ScheduledMonitoringTask {
 
-    private static final Logger log = LoggerFactory.getLogger(ScheduledPollingTask.class);
+    private static final Logger log = LoggerFactory.getLogger(ScheduledMonitoringTask.class);
 
-    private RegisteredServiceRepository registeredServiceRepository;
+    private final RegisteredServiceRepository registeredServiceRepository;
 
     @Scheduled(fixedDelay = 250)
     public void pollRegisteredServices() {
@@ -31,14 +31,13 @@ public class ScheduledPollingTask {
         registeredServiceRepository.findFirst100ByOrderByLastPolledDateAsc().parallelStream().forEach((registeredService -> pollURL(registeredService)));
     }
 
-    private void pollURL(RegisteredService service) {
+    public void pollURL(RegisteredService service) {
         ServiceStatus currentStatus;
         try {
-            HttpURLConnection connection = getHttpURLConnection(service.getUrl());
+            HttpURLConnection connection = getHttpConnectionToURL(service.getUrl());
             currentStatus = getServiceStatus(service, connection);
         } catch (IOException e) {
-            System.out.println(String.format("Failed to poll registered service id %s with url %s because of an exception.", service.getId(), service.getUrl()));
-            log.debug(String.format("Failed to poll registered service id %s with url %s because of an exception.", service.getId(), service.getUrl()),e);
+            log.debug(String.format("Failed to poll registered service id %s with url %s because of an exception.", service.getId(), service.getUrl()), e);
             currentStatus = ServiceStatus.FAIL;
         }
 
@@ -46,22 +45,21 @@ public class ScheduledPollingTask {
         registeredServiceRepository.updateServiceStatus(service.getId(), currentStatus);
     }
 
-    private ServiceStatus getServiceStatus(RegisteredService service, HttpURLConnection connection) throws IOException {
+    public ServiceStatus getServiceStatus(RegisteredService service, HttpURLConnection connection) throws IOException {
         HttpStatus responseStatus = valueOf(connection.getResponseCode());
         connection.disconnect();
-        if(responseStatus.series() == HttpStatus.Series.SUCCESSFUL || // obvious success
+        if (responseStatus.series() == HttpStatus.Series.SUCCESSFUL || // obvious success
                 responseStatus.series() == HttpStatus.Series.INFORMATIONAL || // received and understood
                 responseStatus.series() == HttpStatus.Series.REDIRECTION || // redirect means we got to the endpoint we were told to get to - sounds like a success
                 responseStatus == TOO_MANY_REQUESTS) { // not serving us anymore - probably up though
             return ServiceStatus.OK;
         } else {
-            System.out.println(String.format("Failed to poll url %s, with response status %s",service.getUrl(),responseStatus.toString()));
-            log.debug(String.format("Failed to poll url %s, with response status %s",service.getUrl(),responseStatus.toString()));
+            log.debug(String.format("Failed to poll url %s, with response status %s", service.getUrl(), responseStatus));
             return ServiceStatus.FAIL;
         }
     }
 
-    private HttpURLConnection getHttpURLConnection(String urlStr) throws IOException {
+    public HttpURLConnection getHttpConnectionToURL(String urlStr) throws IOException {
         URL url = new URL(urlStr);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setConnectTimeout(5000);

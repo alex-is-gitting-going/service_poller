@@ -21,13 +21,12 @@ public interface RegisteredServiceRepository extends JpaRepository<RegisteredSer
     @Transactional
     @Modifying
     @Query("update RegisteredService rs set rs.status= :status, rs.lastPolledDate=CURRENT_TIMESTAMP where rs.id = :id")
-    void updateServiceStatus(@Param("id")long id, @Param("status")ServiceStatus status);
+    void updateServiceStatus(@Param("id") long id, @Param("status") ServiceStatus status);
 
     @Transactional
     @Modifying
     @Query("update RegisteredService rs set rs.name= :name, rs.url = :url, rs.status= :status, rs.lastPolledDate = null where rs.id = :id")
-    void updateServiceSettings(@Param("id")long id, @Param("name")String name, @Param("url")String url, @Param("status")ServiceStatus status);
-
+    void updateServiceSettings(@Param("id") long id, @Param("name") String name, @Param("url") String url, @Param("status") ServiceStatus status);
 
 
 }

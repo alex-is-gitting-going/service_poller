@@ -10,20 +10,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "api/v1/monitoredservices")
+@RequestMapping(path = "api/v1/monitored-services")
 @AllArgsConstructor
-public class PollerController {
+public class ServiceMonitoringController {
 
     ServiceMonitoringService serviceMonitoringService;
 
     @PostMapping
-    public void monitorNewService(@RequestBody MonitorNewServiceRequest request) {
-        serviceMonitoringService.registerNewService(request.getName(), request.getURL(), request.getUsername());
+    public RegisteredService monitorNewService(@RequestBody MonitorNewServiceRequest request) {
+        return serviceMonitoringService.registerNewService(request.getName(), request.getURL(), request.getUsername());
     }
 
     @PatchMapping
-    public void updateMonitoredService(@RequestBody UpdateMonitoredServiceRequest request) {
-        serviceMonitoringService.updateMonitoredService(request.getId(), request.getName(), request.getUrl());
+    public RegisteredService updateMonitoredService(@RequestBody UpdateMonitoredServiceRequest request) {
+        return serviceMonitoringService.updateMonitoredService(request.getId(), request.getName(), request.getUrl());
     }
 
     @DeleteMapping
@@ -37,7 +37,7 @@ public class PollerController {
     }
 
     @GetMapping
-    public  List<RegisteredService> getMonitoredServicesForUser(@RequestParam String username) {
+    public List<RegisteredService> getMonitoredServicesForUser(@RequestParam String username) {
         return serviceMonitoringService.getMonitoredServicesForUser(username);
     }
 

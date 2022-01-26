@@ -26,27 +26,29 @@ public class ServiceMonitoringService {
     RegisteredServiceRepository registeredServiceRepository;
 
 
-    public void registerNewService(String serviceName, String url, String username) {
+    public RegisteredService registerNewService(String serviceName, String url, String username) {
         log.info(String.format("User %s is attempting to register new service with name: %s, and url '%s '", username, serviceName, url));
         String normalisedUsername = normaliseUsername(username);
         validateURL(url);
         RegisteredService service = new RegisteredService(serviceName, url, normalisedUsername);
         registeredServiceRepository.save(service);
         log.info(String.format("Service registered: %s", service));
+        return service;
     }
 
-    public void updateMonitoredService(Long id, String newName, String newUrl) {
+    public RegisteredService updateMonitoredService(Long id, String newName, String newUrl) {
         log.info(String.format("Attempting to update service with ID %s with new name '%s' and new URL '%s'", id, newName, newUrl));
         validateURL(newUrl);
         Optional<RegisteredService> existingRegisteredService = registeredServiceRepository.findById(id);
 
-        if(existingRegisteredService.isEmpty()) {
+        if (existingRegisteredService.isEmpty()) {
             log.info(String.format("No service found with ID %s, rejecting request.", id));
             throw new ResponseStatusException(BAD_REQUEST, "Service with provided ID not found");
         }
         RegisteredService service = existingRegisteredService.get();
         registeredServiceRepository.updateServiceSettings(service.getId(), newName, newUrl, ServiceStatus.WAITING);
         log.info(String.format("Service with ID %s updated with new name '%s' and new URL '%s", id, newName, newUrl));
+        return registeredServiceRepository.getById(service.getId());
     }
 
     public void stopMonitoringService(Long id) {
@@ -67,21 +69,21 @@ public class ServiceMonitoringService {
         return registeredServiceRepository.findByUsername(normalisedUsername);
     }
 
-    private String normaliseUsername(String username) {
+    public String normaliseUsername(String username) {
         String normalisedUsername;
 
-        if(username == null) {
+        if (username == null) {
             normalisedUsername = "";
         } else {
             normalisedUsername = username.trim().toUpperCase();
         }
 
-        if(username.isEmpty()){
+        if (normalisedUsername.isEmpty()) {
             log.info(String.format("Rejecting request as no username was provided: %s", username));
             throw new ResponseStatusException(BAD_REQUEST, "No username provided");
         }
 
-        if(normalisedUsername.length() > 255) {
+        if (normalisedUsername.length() > 255) {
             log.info(String.format("Rejecting request as username was too long: %s", username));
             throw new ResponseStatusException(BAD_REQUEST, "Username too long (max 255 chars)");
         }
@@ -89,7 +91,7 @@ public class ServiceMonitoringService {
         return normalisedUsername;
     }
 
-    private void validateURL(String url) {
+    public void validateURL(String url) {
         try {
             new URL(url);
         } catch (MalformedURLException e) {
@@ -97,9 +99,9 @@ public class ServiceMonitoringService {
             throw new ResponseStatusException(BAD_REQUEST, "Provided URL is not a valid URL");
         }
 
-        if(url.length() > 2048) {
+        if (url.length() > 2048) {
             log.info(String.format("Rejecting request as the URL was too long: %s", url));
-            throw new ResponseStatusException(BAD_REQUEST, "Provided URL is too long (max len 255)");
+            throw new ResponseStatusException(BAD_REQUEST, "Provided URL is too long (max len 2048)");
         }
     }
 

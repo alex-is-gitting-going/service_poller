@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @ToString
 @Table(indexes = {
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 public class RegisteredService {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     @Column(length = 2000)
@@ -31,7 +32,7 @@ public class RegisteredService {
         this.name = name;
         this.url = url;
         this.username = username;
-        status = ServiceStatus.WAITING;
-        createDate = LocalDateTime.now();
+        this.status = ServiceStatus.WAITING;
+        this.createDate = LocalDateTime.now();
     }
 }

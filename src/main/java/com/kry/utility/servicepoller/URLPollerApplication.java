@@ -8,8 +8,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class URLPollerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(URLPollerApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(URLPollerApplication.class, args);
+    }
 
 }
