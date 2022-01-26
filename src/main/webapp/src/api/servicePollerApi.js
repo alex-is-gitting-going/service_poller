@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const endpoint = "/api/v1/monitoredservices";
+const endpoint = "/api/v1/monitored-services";
 
 export const getPolledURLs = (username) => {
   return new Promise((resolve, reject) => {
