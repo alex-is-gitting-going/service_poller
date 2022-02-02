@@ -36,7 +36,7 @@ public class ScheduledMonitoringTask {
         try {
             HttpURLConnection connection = getHttpConnectionToURL(service.getUrl());
             currentStatus = getServiceStatus(service, connection);
-        } catch (IOException e) {
+        } catch (IOException | RuntimeException e) {
             log.debug(String.format("Failed to poll registered service id %s with url %s because of an exception.", service.getId(), service.getUrl()), e);
             currentStatus = ServiceStatus.FAIL;
         }
