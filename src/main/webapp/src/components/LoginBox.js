@@ -34,7 +34,7 @@ const LoginBox = ({ setSelectedUsername }) => {
               left: isUsernameBoxFocus || username ? "0px" : "42.5px",
             },
           }}
-          error={usernameBoxError}
+          error={usernameBoxError !== ""}
           helperText={usernameBoxError}
           value={username}
           label={"Username"}
